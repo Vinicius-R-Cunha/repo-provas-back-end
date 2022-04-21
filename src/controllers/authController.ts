@@ -8,6 +8,9 @@ export async function signUp(req: Request, res: Response) {
     res.sendStatus(201);
 }
 
-export function signIn(req: Request, res: Response) {
-    res.status(201).send('alo2');
+export async function signIn(req: Request, res: Response) {
+
+    const token = await authService.signIn(req.body);
+
+    res.status(201).send(token);
 }
