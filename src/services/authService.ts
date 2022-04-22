@@ -43,16 +43,26 @@ function checkIfPasswordsMatch(password: string, passwordConfirmation: string) {
 }
 
 export async function signIn(data: SignInData) {
-    const { email, password } = data;
-    const secretKey = process.env.JWT_SECRET;
+    const { email } = data;
 
     await validateLogin(data);
-
-    const token = jwt.sign({
-        data: email
-    }, secretKey);
+    const token = generateToken(email);
 
     return token;
+}
+
+function generateToken(email: string) {
+    const secretKey = process.env.JWT_SECRET;
+
+    return jwt.sign(
+        {
+            data: email
+        },
+        secretKey,
+        {
+            expiresIn: 60 * 24 * 60 * 60
+        }
+    );
 }
 
 async function validateLogin(data: SignInData) {
