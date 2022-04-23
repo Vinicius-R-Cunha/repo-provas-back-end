@@ -14,3 +14,7 @@ export async function signIn(req: Request, res: Response) {
 
     res.status(201).send(token);
 }
+
+export async function checkToken(req: Request, res: Response) {
+    res.sendStatus(200);
+}
