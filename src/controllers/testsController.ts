@@ -5,12 +5,12 @@ export async function getTestsByDiscipline(req: Request, res: Response) {
 
     const tests = await testsService.getByDiscipline();
 
-    res.status(201).send(tests);
+    res.status(200).send(tests);
 }
 
 export async function getTestsByTeacher(req: Request, res: Response) {
 
     const tests = await testsService.getByTeacher();
 
-    res.status(201).send(tests);
+    res.status(200).send(tests);
 }

@@ -13,6 +13,11 @@ export async function getByDisciplineAndTerm(termNumber: number, discipline: str
             },
             teacherDiscipline: {
                 select: {
+                    discipline: {
+                        select: {
+                            term: true
+                        }
+                    },
                     teacher: {
                         select: {
                             name: true
@@ -43,7 +48,7 @@ export async function getByDisciplineAndTerm(termNumber: number, discipline: str
     });
 }
 
-export async function getByTeacher(teacher: string) {
+export async function getByTeacherAndCategory(teacher: string, category: string) {
     return prisma.tests.findMany({
         select: {
             id: true,
@@ -56,6 +61,11 @@ export async function getByTeacher(teacher: string) {
             },
             teacherDiscipline: {
                 select: {
+                    teacher: {
+                        select: {
+                            id: true
+                        }
+                    },
                     discipline: {
                         select: {
                             name: true,
@@ -69,11 +79,20 @@ export async function getByTeacher(teacher: string) {
                 }
             }
         }, where: {
-            teacherDiscipline: {
-                teacher: {
-                    name: teacher
+            AND: [
+                {
+                    category: {
+                        name: category
+                    }
+                },
+                {
+                    teacherDiscipline: {
+                        teacher: {
+                            name: teacher
+                        }
+                    }
                 }
-            }
+            ]
         }
     });
 }
