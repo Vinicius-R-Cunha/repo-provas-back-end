@@ -31,6 +31,7 @@ export async function getByTeacher() {
     const teachers = await teacherRepository.getTeachers();
 
     const resp = [];
+    let cont = 1;
     for (let i = 0; i < teachers.length; i++) {
         const categoriesWithRepeated = await categoryRepository.getCategoriesByTeacher(teachers[i]?.name);
 
@@ -41,12 +42,13 @@ export async function getByTeacher() {
             const tests = await testRepository.getByTeacherAndCategory(teachers[i]?.name, categories[j]);
 
             if (tests.length !== 0) {
-                aux.push({ categoriyName: categories[j], categoryData: tests })
+                aux.push({ id: cont, categoriyName: categories[j], categoryData: tests })
+                cont++;
             }
         }
 
         if (aux.length !== 0) {
-            resp.push({ teacherName: teachers[i]?.name, teacherData: aux })
+            resp.push({ id: teachers[i].id, teacherName: teachers[i]?.name, teacherData: aux })
         }
     }
 
