@@ -58,7 +58,6 @@ export async function getByTeacher() {
 function uniqueName(categories: any[]) {
     const hashtable = {};
 
-    console.log(categories);
     for (let i = 0; i < categories.length; i++) {
         hashtable[categories[i].category.name] = true;
     }
