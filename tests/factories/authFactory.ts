@@ -12,11 +12,10 @@ export function signUpBodyFactory(): SignUpData {
     }
 }
 
-export async function signInFactory(user: SignInData) {
-    await prisma.users.create({
-        data: {
-            ...user,
-            password: bcrypt.hashSync(user.password, 10)
-        }
-    });
+export async function signInFactory() {
+    const password = faker.internet.password();
+    return {
+        email: faker.internet.email(),
+        password: bcrypt.hashSync(password, 10)
+    }
 }
