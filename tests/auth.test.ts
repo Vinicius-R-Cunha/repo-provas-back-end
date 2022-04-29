@@ -2,7 +2,6 @@ import supertest from "supertest";
 import app from "../src/app.js";
 import { prisma } from "../src/database.js";
 import * as authFactory from "./factories/authFactory.js";
-import bcrypt from "bcrypt";
 
 describe("POST /sign-up", () => {
     beforeEach(truncateUsers);
@@ -58,13 +57,7 @@ describe("POST /sign-in", () => {
         const body = authFactory.signUpBodyFactory();
         await supertest(app).post("/sign-up").send(body);
 
-        const user = await prisma.users.findUnique({
-            where: {
-                email: body.email
-            }
-        });
-
-        const response = await supertest(app).post("/sign-in").send({ email: user.email, password: body.password });
+        const response = await supertest(app).post("/sign-in").send({ email: body.email, password: body.password });
 
         expect(response.status).toBe(200);
     });

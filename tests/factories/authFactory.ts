@@ -1,5 +1,4 @@
 import { faker } from "@faker-js/faker";
-import { prisma } from "../../src/database.js";
 import { SignInData, SignUpData } from "../../src/services/authService";
 import bcrypt from "bcrypt";
 
@@ -12,7 +11,7 @@ export function signUpBodyFactory(): SignUpData {
     }
 }
 
-export async function signInFactory() {
+export function signInFactory(): SignInData {
     const password = faker.internet.password();
     return {
         email: faker.internet.email(),

@@ -1,16 +1,23 @@
 import { Request, Response } from "express";
-import * as testsService from "../services/testsService.js";
+import * as testService from "../services/testService.js";
 
 export async function getTestsByDiscipline(req: Request, res: Response) {
 
-    const tests = await testsService.getByDiscipline();
+    const tests = await testService.getByDiscipline();
 
     res.status(200).send(tests);
 }
 
 export async function getTestsByTeacher(req: Request, res: Response) {
 
-    const tests = await testsService.getByTeacher();
+    const tests = await testService.getByTeacher();
 
     res.status(200).send(tests);
+}
+
+export async function postTest(req: Request, res: Response) {
+
+
+
+    res.sendStatus(201);
 }

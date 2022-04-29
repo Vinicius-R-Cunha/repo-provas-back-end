@@ -4,6 +4,14 @@ import * as teacherRepository from "../repositories/teacherRepository.js";
 import * as disciplineRepository from "../repositories/disciplineRepository.js";
 import * as categoryRepository from "../repositories/categoryRepository.js";
 
+export interface TestData {
+    name: string;
+    pdfUrl: string;
+    category: string;
+    discipline: string;
+    teacher: string;
+}
+
 export async function getByDiscipline() {
     const terms = await termRepository.getTerms();
 
