@@ -73,7 +73,7 @@ describe("POST /sign-in", () => {
     });
 
     it("given a invalid user should return 409", async () => {
-        const body = await authFactory.signInFactory();
+        const body = authFactory.signInBodyFactory();
 
         const response = await supertest(app).post("/sign-in").send(body);
 
@@ -93,6 +93,38 @@ describe("POST /sign-in", () => {
         const response = await supertest(app).post("/sign-in").send({ email: user.email, password: user.password });
 
         expect(response.status).toBe(409);
+    });
+
+});
+
+describe("POST /tests", () => {
+    beforeEach(truncateUsers);
+    afterAll(disconnect);
+
+    it("should return 201 given a valid body", async () => {
+        const token = await authFactory.tokenFactory();
+
+        const test = {
+            name: 'string',
+            pdfUrl: 'string',
+            category: 'string',
+            discipline: 'string',
+            teacher: 'string'
+        };
+
+        const response = await supertest(app).post("/tests").send(test).set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(201);
+    });
+
+    it("should return 422 given a invalid body", async () => {
+        const token = await authFactory.tokenFactory();
+
+        const test = {};
+
+        const response = await supertest(app).post("/tests").send(test).set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(422);
     });
 
 });

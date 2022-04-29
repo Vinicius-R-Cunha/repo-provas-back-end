@@ -1,6 +1,9 @@
 import { faker } from "@faker-js/faker";
-import { SignInData, SignUpData } from "../../src/services/authService";
+import { prisma } from "../../src/database.js";
+import { SignInData, SignUpData } from "../../src/services/authService.js";
 import bcrypt from "bcrypt";
+import supertest from "supertest";
+import app from "../../src/app.js";
 
 export function signUpBodyFactory(): SignUpData {
     const password = faker.internet.password();
@@ -11,10 +14,27 @@ export function signUpBodyFactory(): SignUpData {
     }
 }
 
-export function signInFactory(): SignInData {
-    const password = faker.internet.password();
+export function signInBodyFactory(): SignInData {
     return {
         email: faker.internet.email(),
-        password: bcrypt.hashSync(password, 10)
+        password: faker.internet.password()
     }
+}
+
+export async function signInFactory(user: SignInData) {
+    await prisma.users.create({
+        data: {
+            ...user,
+            password: bcrypt.hashSync(user.password, 10)
+        }
+    });
+}
+
+export async function tokenFactory() {
+    const body = signInBodyFactory();
+    await signInFactory(body);
+
+    const response = await supertest(app).post('/sign-in').send(body);
+
+    return response.text;
 }
