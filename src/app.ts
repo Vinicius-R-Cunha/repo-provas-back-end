@@ -1,3 +1,4 @@
+import "./setup.js";
 import express from "express";
 import cors from "cors";
 import "express-async-errors";
@@ -10,7 +11,4 @@ app.use(cors());
 app.use(router);
 app.use(handleErrorsMiddleware);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Running on port ${PORT}`);
-});
+export default app;
