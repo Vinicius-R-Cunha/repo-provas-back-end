@@ -72,3 +72,7 @@ function uniqueName(categories: any[]) {
 
     return (Object.keys(hashtable));
 }
+
+export async function update(id: number) {
+    await testRepository.updateViews(id);
+}

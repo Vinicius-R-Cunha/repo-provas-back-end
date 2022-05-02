@@ -15,6 +15,14 @@ export async function getTestsByTeacher(req: Request, res: Response) {
     res.status(200).send(tests);
 }
 
+export async function updateViews(req: Request, res: Response) {
+    const { id } = req.params;
+
+    await testService.update(parseFloat(id));
+
+    res.sendStatus(200);
+}
+
 export async function postTest(req: Request, res: Response) {
 
 

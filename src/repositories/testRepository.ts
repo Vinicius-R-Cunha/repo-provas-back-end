@@ -6,6 +6,7 @@ export async function getByDisciplineAndTerm(termNumber: number, discipline: str
             id: true,
             name: true,
             pdfUrl: true,
+            views: true,
             category: {
                 select: {
                     name: true
@@ -54,6 +55,7 @@ export async function getByTeacherAndCategory(teacher: string, category: string)
             id: true,
             name: true,
             pdfUrl: true,
+            views: true,
             category: {
                 select: {
                     name: true
@@ -93,6 +95,18 @@ export async function getByTeacherAndCategory(teacher: string, category: string)
                     }
                 }
             ]
+        }
+    });
+}
+
+export async function updateViews(id: number) {
+    return prisma.tests.update({
+        data: {
+            views: {
+                increment: 1
+            }
+        }, where: {
+            id
         }
     });
 }
