@@ -1,7 +1,5 @@
 import { faker } from "@faker-js/faker";
 import { prisma } from "../../src/database.js";
-import supertest from "supertest";
-import app from "../../src/app.js";
 
 export async function testFactory() {
     await teachersFactory();
@@ -69,7 +67,7 @@ async function teachersDisciplinesFactory() {
 
     const discipline = await prisma.disciplines.findUnique({
         where: {
-            name: 'P1'
+            name: 'Cálculo'
         }
     });
 
@@ -90,7 +88,7 @@ async function disciplinesFactory() {
 
     await prisma.disciplines.create({
         data: {
-            name: 'P1',
+            name: 'Cálculo',
             termId: term.id
         }
     });

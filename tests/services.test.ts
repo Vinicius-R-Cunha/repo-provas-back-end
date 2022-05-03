@@ -95,42 +95,9 @@ describe("POST /sign-in", () => {
 
         expect(response.status).toBe(409);
     });
-
 });
 
-describe("POST /tests", () => {
-    beforeEach(truncateUsers);
-    afterAll(disconnect);
-
-    it("should return 201 given a valid body", async () => {
-        const token = await authFactory.tokenFactory();
-
-        const test = {
-            name: 'string',
-            pdfUrl: 'string',
-            category: 'string',
-            discipline: 'string',
-            teacher: 'string'
-        };
-
-        const response = await supertest(app).post("/tests").send(test).set('Authorization', `Bearer ${token}`);
-
-        expect(response.status).toBe(201);
-    });
-
-    it("should return 422 given a invalid body", async () => {
-        const token = await authFactory.tokenFactory();
-
-        const test = {};
-
-        const response = await supertest(app).post("/tests").send(test).set('Authorization', `Bearer ${token}`);
-
-        expect(response.status).toBe(422);
-    });
-
-});
-
-describe("Put /test/id", () => {
+describe("PUT /test/id", () => {
     it("should return 422 given a float id", async () => {
         const id = 3.5;
 
@@ -160,7 +127,134 @@ describe("Put /test/id", () => {
 
         expect(response.status).toBe(200);
     });
-})
+});
+
+describe("GET /categories", () => {
+    it("should return 200", async () => {
+        const token = await authFactory.tokenFactory();
+
+        const response = await supertest(app).get(`/categories`).set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(200);
+    });
+});
+
+describe("GET /disciplines", () => {
+    it("should return 200", async () => {
+        const token = await authFactory.tokenFactory();
+
+        const response = await supertest(app).get(`/disciplines`).set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(200);
+    });
+});
+
+describe("GET /teachers/disciplineName", () => {
+    it("should return 200 given a valid disciplineName", async () => {
+        const token = await authFactory.tokenFactory();
+
+        const response = await supertest(app).get(`/teacher/Cálculo`).set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body.length).toBeGreaterThan(0);
+    });
+
+    it("should return 200 given a invalid disciplineName", async () => {
+        const token = await authFactory.tokenFactory();
+
+        const response = await supertest(app).get(`/teacher/123`).set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body.length).toBe(0);
+    });
+});
+
+describe("POST /tests", () => {
+    beforeEach(truncateUsers);
+    afterAll(disconnect);
+
+    it("should return 201 given a valid body", async () => {
+        await testFactory.testFactory();
+
+        const token = await authFactory.tokenFactory();
+
+        const test = {
+            name: 'string',
+            pdfUrl: 'string',
+            category: 'P1',
+            discipline: 'Cálculo',
+            teacher: 'Teacher'
+        };
+
+        const response = await supertest(app).post("/tests").send(test).set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(201);
+    });
+
+    it("should return 422 given a invalid body", async () => {
+        const token = await authFactory.tokenFactory();
+
+        const test = {};
+
+        const response = await supertest(app).post("/tests").send(test).set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(422);
+    });
+
+    it("should return 422 given a non existent category", async () => {
+        await testFactory.testFactory();
+
+        const token = await authFactory.tokenFactory();
+
+        const test = {
+            name: 'string',
+            pdfUrl: 'string',
+            category: 'P8',
+            discipline: 'Cálculo',
+            teacher: 'Teacher'
+        };
+
+        const response = await supertest(app).post("/tests").send(test).set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(422);
+    });
+
+    it("should return 422 given a non existent discipline", async () => {
+        await testFactory.testFactory();
+
+        const token = await authFactory.tokenFactory();
+
+        const test = {
+            name: 'string',
+            pdfUrl: 'string',
+            category: 'P1',
+            discipline: 'Álgebra',
+            teacher: 'Teacher'
+        };
+
+        const response = await supertest(app).post("/tests").send(test).set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(422);
+    });
+
+    it("should return 422 given a non existent teacher", async () => {
+        await testFactory.testFactory();
+
+        const token = await authFactory.tokenFactory();
+
+        const test = {
+            name: 'string',
+            pdfUrl: 'string',
+            category: 'P1',
+            discipline: 'Álgebra',
+            teacher: 'Pedro'
+        };
+
+        const response = await supertest(app).post("/tests").send(test).set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(422);
+    });
+});
 
 async function disconnect() {
     await prisma.$disconnect();
