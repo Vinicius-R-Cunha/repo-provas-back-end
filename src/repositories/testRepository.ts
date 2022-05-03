@@ -99,6 +99,14 @@ export async function getByTeacherAndCategory(teacher: string, category: string)
     });
 }
 
+export async function getTestById(id: number) {
+    return prisma.tests.findUnique({
+        where: {
+            id
+        }
+    });
+}
+
 export async function updateViews(id: number) {
     return prisma.tests.update({
         data: {

@@ -50,7 +50,7 @@ export async function getByTeacher() {
             const tests = await testRepository.getByTeacherAndCategory(teachers[i]?.name, categories[j]);
 
             if (tests.length !== 0) {
-                aux.push({ id: cont, categoriyName: categories[j], categoryData: tests })
+                aux.push({ id: cont, categoryName: categories[j], categoryData: tests })
                 cont++;
             }
         }
@@ -74,5 +74,12 @@ function uniqueName(categories: any[]) {
 }
 
 export async function update(id: number) {
+    if (isNaN(id)) throw { type: 'bad_request', message: 'id should be a number' }
+    if (id % 1 !== 0) throw { type: 'bad_request', message: 'id should be an integer' }
+
+    const test = await testRepository.getTestById(id);
+
+    if (!test) throw { type: 'not_found', message: 'this test id does not exists' }
+
     await testRepository.updateViews(id);
 }

@@ -2,6 +2,7 @@ import supertest from "supertest";
 import app from "../src/app.js";
 import { prisma } from "../src/database.js";
 import * as authFactory from "./factories/authFactory.js";
+import * as testFactory from "./factories/testFactory.js";
 
 describe("POST /sign-up", () => {
     beforeEach(truncateUsers);
@@ -129,10 +130,49 @@ describe("POST /tests", () => {
 
 });
 
+describe("Put /test/id", () => {
+    it("should return 422 given a float id", async () => {
+        const id = 3.5;
+
+        const token = await authFactory.tokenFactory();
+
+        const response = await supertest(app).put(`/test/${id}`).send({}).set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(422);
+    });
+
+    it("should return 422 given id that is NaN", async () => {
+        const id = 'string';
+
+        const token = await authFactory.tokenFactory();
+
+        const response = await supertest(app).put(`/test/${id}`).send({}).set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(422);
+    });
+
+    it("should return 200 given a valid id", async () => {
+        const test = await testFactory.testFactory();
+
+        const token = await authFactory.tokenFactory();
+
+        const response = await supertest(app).put(`/test/${test.id}`).send({}).set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(200);
+    });
+})
+
 async function disconnect() {
     await prisma.$disconnect();
 }
 
 async function truncateUsers() {
-    await prisma.$executeRaw`TRUNCATE TABLE users;`;
+    await prisma.$executeRaw`TRUNCATE TABLE 
+        users, 
+        tests, 
+        teachers, 
+        categories, 
+        "teachersDisciplines", 
+        disciplines, 
+        terms;`;
 }
