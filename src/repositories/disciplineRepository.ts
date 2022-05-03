@@ -11,6 +11,17 @@ export async function getDisciplines() {
     });
 }
 
+export async function getDisciplineByName(name: string) {
+    return prisma.disciplines.findUnique({
+        select: {
+            id: true,
+            name: true
+        }, where: {
+            name
+        }
+    });
+}
+
 export async function getDisciplineByTerm(termNumber: number) {
     return prisma.disciplines.findMany({
         select: {

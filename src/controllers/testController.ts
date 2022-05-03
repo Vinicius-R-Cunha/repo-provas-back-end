@@ -25,7 +25,7 @@ export async function updateViews(req: Request, res: Response) {
 
 export async function postTest(req: Request, res: Response) {
 
-
+    await testService.createTest(req.body);
 
     res.sendStatus(201);
 }

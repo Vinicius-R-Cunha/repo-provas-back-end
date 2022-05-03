@@ -11,6 +11,17 @@ export async function getCategories() {
     });
 }
 
+export async function getCategorieByName(name: string) {
+    return await prisma.categories.findUnique({
+        select: {
+            id: true,
+            name: true
+        }, where: {
+            name: name
+        }
+    });
+}
+
 export async function getCategoriesByTeacher(teacher: string) {
     return await prisma.tests.findMany({
         select: {

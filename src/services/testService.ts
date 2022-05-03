@@ -2,6 +2,7 @@ import * as testRepository from "../repositories/testRepository.js";
 import * as termRepository from "../repositories/termRepository.js";
 import * as teacherRepository from "../repositories/teacherRepository.js";
 import * as disciplineRepository from "../repositories/disciplineRepository.js";
+import * as teacherDisciplineRepository from "../repositories/teacherDisciplineRepository.js";
 import * as categoryRepository from "../repositories/categoryRepository.js";
 
 export interface TestData {
@@ -94,4 +95,50 @@ function sortTests(tests: any) {
         if (categoryA > categoryB) return 1;
         return 0;
     });
+}
+
+export async function createTest(body: TestData) {
+    const categoryId = await validateCategory(body);
+    const disciplineId = await validateDiscipline(body);
+    const teacherId = await validateTeacher(body);
+    const teacherDisciplineId = await validateTeacherDiscipline(disciplineId, teacherId);
+
+    await testRepository.create({
+        name: body.name,
+        pdfUrl: body.pdfUrl,
+        categoryId,
+        teacherDisciplineId
+    });
+}
+
+async function validateCategory(body: TestData) {
+    const category = await categoryRepository.getCategorieByName(body.category);
+
+    if (!category) throw { type: 'bad_request', message: 'this category does not exists' }
+
+    return category.id;
+}
+
+async function validateDiscipline(body: TestData) {
+    const discipline = await disciplineRepository.getDisciplineByName(body.discipline);
+
+    if (!discipline) throw { type: 'bad_request', message: 'this discipline does not exists' }
+
+    return discipline.id;
+}
+
+async function validateTeacher(body: TestData) {
+    const teacher = await teacherRepository.getTeacherByName(body.teacher);
+
+    if (!teacher) throw { type: 'bad_request', message: 'this teacher does not exists' }
+
+    return teacher.id;
+}
+
+async function validateTeacherDiscipline(disciplineId: number, teacherId: number) {
+    const teacherDiscipline = await teacherDisciplineRepository.getTeacherDisciplineByDisciplineIdAndTeacherId(disciplineId, teacherId);
+
+    if (!teacherDiscipline) throw { type: 'bad_request', message: 'this teacher does not teach this discipline' }
+
+    return teacherDiscipline.id;
 }

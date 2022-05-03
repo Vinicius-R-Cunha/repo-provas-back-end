@@ -118,3 +118,18 @@ export async function updateViews(id: number) {
         }
     });
 }
+
+interface CreatTestData {
+    name: string;
+    pdfUrl: string;
+    categoryId: number;
+    teacherDisciplineId: number;
+}
+
+export async function create(body: CreatTestData) {
+    return prisma.tests.create({
+        data: {
+            ...body
+        }
+    })
+}

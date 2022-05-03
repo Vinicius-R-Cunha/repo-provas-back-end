@@ -9,6 +9,17 @@ export async function getTeachers() {
     });
 }
 
+export async function getTeacherByName(name: string) {
+    return prisma.teachers.findUnique({
+        select: {
+            id: true,
+            name: true
+        }, where: {
+            name
+        }
+    });
+}
+
 export async function getTeachersByDiscipline(discipline: string) {
     return await prisma.teachersDisciplines.findMany({
         select: {
