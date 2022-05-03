@@ -13,6 +13,39 @@ export interface TestData {
     teacher: string;
 }
 
+interface Categories {
+    category: {
+        name: string;
+    };
+    teacherDiscipline: {
+        teacher: {
+            name: string;
+        };
+    };
+}
+
+interface Terms {
+    number: number;
+}
+
+interface Tests {
+    id: number;
+    name: string;
+    pdfUrl: string;
+    views: number;
+    category: {
+        name: string;
+    };
+    teacherDiscipline: {
+        teacher: {
+            name: string;
+        };
+        discipline: {
+            term: Terms;
+        };
+    };
+}
+
 export async function getByDiscipline() {
     const terms = await termRepository.getTerms();
 
@@ -66,7 +99,7 @@ export async function getByTeacher() {
     return resp;
 }
 
-function uniqueName(categories: any[]) {
+function uniqueName(categories: Categories[]) {
     const hashtable = {};
 
     for (let i = 0; i < categories.length; i++) {
@@ -87,7 +120,7 @@ export async function update(id: number) {
     await testRepository.updateViews(id);
 }
 
-function sortTests(tests: any) {
+function sortTests(tests: Tests[]) {
     return tests.sort((a: any, b: any) => {
         const categoryA = a.category.name
         const categoryB = b.category.name
