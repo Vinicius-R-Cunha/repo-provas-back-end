@@ -23,6 +23,8 @@ export async function getByDiscipline() {
         for (let j = 0; j < disciplines.length; j++) {
             const tests = await testRepository.getByDisciplineAndTerm(terms[i].number, disciplines[j]?.name)
 
+            sortTests(tests);
+
             if (tests.length !== 0) {
                 aux.push({ disciplineName: disciplines[j]?.name, disciplineData: tests })
             }
@@ -70,7 +72,7 @@ function uniqueName(categories: any[]) {
         hashtable[categories[i].category.name] = true;
     }
 
-    return (Object.keys(hashtable));
+    return (Object.keys(hashtable)).sort();
 }
 
 export async function update(id: number) {
@@ -82,4 +84,14 @@ export async function update(id: number) {
     if (!test) throw { type: 'not_found', message: 'this test id does not exists' }
 
     await testRepository.updateViews(id);
+}
+
+function sortTests(tests: any) {
+    return tests.sort((a: any, b: any) => {
+        const categoryA = a.category.name
+        const categoryB = b.category.name
+        if (categoryA < categoryB) return -1;
+        if (categoryA > categoryB) return 1;
+        return 0;
+    });
 }
