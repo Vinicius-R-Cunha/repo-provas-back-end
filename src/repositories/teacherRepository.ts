@@ -8,3 +8,20 @@ export async function getTeachers() {
         }
     });
 }
+
+export async function getTeachersByDiscipline(discipline: string) {
+    return await prisma.teachersDisciplines.findMany({
+        select: {
+            id: true,
+            teacher: {
+                select: {
+                    name: true
+                }
+            }
+        }, where: {
+            discipline: {
+                name: discipline
+            }
+        }
+    });
+}
